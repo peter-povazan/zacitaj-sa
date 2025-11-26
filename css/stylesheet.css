@@ -12,14 +12,14 @@ h2 {
 }
 
 .book-img {
-  width: 170px;
+  width: 130px;
   border-radius: 4px;
   transition: transform .3s ease, opacity .3s ease;
   margin-bottom: 20px;
 }
 
 .book-cover {
-  max-width: 250px;
+  max-width: 130px;
   border-radius: 4px;
   display: block;
   margin: 0 auto;
