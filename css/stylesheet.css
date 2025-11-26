@@ -1,0 +1,204 @@
+/* Základné nastavenia */
+body {
+  background: #fff;
+  margin: 0;
+  padding: 0;
+  font-family: "Georgia", "Times New Roman", serif;
+}
+
+h2 {
+  text-align: center;
+  margin: 3rem;
+}
+
+.book-img {
+  width: 170px;
+  border-radius: 4px;
+  transition: transform .3s ease, opacity .3s ease;
+  margin-bottom: 20px;
+}
+
+.book-cover {
+  max-width: 250px;
+  border-radius: 4px;
+  display: block;
+  margin: 0 auto;
+}
+
+/* Obsah kapitoly */
+.chapter-content {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 1rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.05);
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.chapter-content p {
+  text-align: justify;
+  text-indent: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+/* CTA button */
+#buyFullBtn {
+  background: #1AAE2D;
+  border: none;
+  padding: 13px 32px;
+  border-radius: 12px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: 600;
+  font-family: "Open Sans Condensed", sans-serif;
+  display: none;     /* skryté default */
+}
+
+#buyFullBtn:hover {
+  background: #138222;
+}
+
+/* Toolbar */
+#bottom-toolbar {
+  position: fixed;
+  bottom: 26px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0.5rem 0;
+
+  backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.75);
+  -webkit-backdrop-filter: blur(12px);
+
+  border-top: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 -1px 5px rgba(0,0,0,0.1);
+
+  z-index: 1000;
+}
+
+/* Ikony */
+.icon-btn {
+  background: #e0e0e0;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.icon-btn:hover {
+  background: #d5d5d5;
+}
+
+/* Progress bar */
+#reading-progress { 
+  position: fixed;
+  bottom: 90px;
+  left: 0;
+  width: 0%;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.3); /* priesvitná červená */
+  z-index: 9999;
+  transition: width 0.15s linear;
+}
+
+/* Footer */
+.sticky-footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  padding: 0.25rem 0;
+  font-size: 0.75rem;
+  background: rgba(235, 235, 235, 0.95);
+  text-align: center;
+  color: #666;
+  border-top: 1px solid #ddd;
+  z-index: 999;
+}
+
+.cover-placeholder {
+  width: 200px;
+  height: 280px;
+  margin: 0 auto 20px;
+  background: #e5e5e5;
+  border-radius: 8px;
+  display: none; /* default hidden */
+  align-items: center;
+  justify-content: center;
+}
+
+.cover-placeholder i {
+  font-size: 60px;
+  color: #999;
+}
+
+/* DARK MODE ---------------------------------------------------- */
+
+.dark-mode body,
+.dark-mode {
+  background: #121212 !important;
+}
+
+/* obsah */
+.dark-mode .chapter-content {
+  background: #1d1d1d !important;
+  color: #eee !important;
+}
+
+/* odstavce */
+.dark-mode .chapter-content p {
+  color: #e5e5e5 !important;
+}
+
+/* nadpisy hore */
+.dark-mode h1,
+.dark-mode .text-muted {
+  color: #f0f0f0 !important;
+}
+
+/* toolbar */
+.dark-mode #bottom-toolbar {
+  background: rgba(20, 20, 20, 0.85) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+/* ikonky */
+.dark-mode .icon-btn {
+  background: #2b2b2b !important;
+  color: white !important;
+}
+
+.dark-mode .icon-btn:hover {
+  background: #3a3a3a !important;
+}
+
+/* CTA button nech ostane zelený */
+.dark-mode #buyFullBtn {
+  color: white !important;
+}
+
+/* footer */
+.dark-mode .sticky-footer {
+  background: #111 !important;
+  color: #888 !important;
+}
+
+.dark-mode .cover-placeholder {
+  background: #2a2a2a;
+}
+
+.dark-mode .cover-placeholder i {
+  color: #777;
+}
+
+.dark-mode #reading-progress {
+  background: #B9012B !important; /* svetlá zelená, krásne viditeľná */
+}
