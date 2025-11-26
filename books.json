@@ -9,5 +9,82 @@
     "chapter": "books/alchemised/chapter.html",
     "buy": "https://www.albatrosmedia.sk/tituly/26604988/alchemised/",
     "description": "Dievča, ktoré stratilo pamäť, a muž, ktorý má odhaliť najhlbšie tajomstvá jej minulosti"
+},
+  "9788056649251": {
+    "carousel": "1",
+    "public": "1",
+    "title": "Cesta šamana",
+    "author": "Hernán Huarache Mamani",
+    "cover3d": "books/cesta_samana/3d.jpg",
+    "cover": "books/cesta_samana/cover.jpg",
+    "chapter": "books/cesta_samana/chapter.html",
+    "buy": "https://www.albatrosmedia.sk/tituly/26579767/cesta-samana/",
+    "description": "Životopisný príbeh autora úspešnej série duchovných románov prináša posolstvo Inkov o prebudení ženskej energie"
+},
+  "9788056649350": {
+    "carousel": "1",
+    "public": "1",
+    "title": "H",
+    "author": "Bernard Minier",
+    "cover3d": "books/h/3d.jpg",
+    "cover": "books/h/cover.jpg",
+    "chapter": "books/h/chapter.html",
+    "buy": "https://www.albatrosmedia.sk/tituly/27577125/h/",
+    "description": "Koľko ľudí je treba na dolapenie najznámejšieho sériového vraha?"
+},
+  "9788056649831": {
+    "carousel": "1",
+    "public": "1",
+    "title": "Intermezzo",
+    "author": "Sally Rooney",
+    "cover3d": "books/intermezzo/3d.jpg",
+    "cover": "books/intermezzo/cover.jpg",
+    "chapter": "books/intermezzo/chapter.html",
+    "buy": "https://www.albatrosmedia.sk/tituly/27477521/intermezzo/",
+    "description": "Hlboký príbeh o strate, vzťahoch a láske"
+},
+  "9788056648803": {
+    "carousel": "1",
+    "public": "1",
+    "title": "Katabasis",
+    "author": "R.F. Kuang",
+    "cover3d": "books/katabasis/3d.jpg",
+    "cover": "books/katabasis/cover.jpg",
+    "chapter": "books/katabasis/chapter.html",
+    "buy": "https://www.albatrosmedia.sk/tituly/26859478/katabasis/",
+    "description": "Do pekla s láskou"
+},
+  "9788056648797": {
+    "carousel": "1",
+    "public": "1",
+    "title": "Rozprávačka z Auschwitzu",
+    "author": "Siobhan Curham",
+    "cover3d": "books/rozpravacka_z_auschwitzu/3d.jpg",
+    "cover": "books/rozpravacka_z_auschwitzu/cover.jpg",
+    "chapter": "books/rozpravacka_z_auschwitzu/chapter.html",
+    "buy": "https://www.albatrosmedia.sk/tituly/26954019/rozpravacka-z-auschwitzu/",
+    "description": "Brutálnemu útlaku čelila svojimi príbehmi"
+},
+  "9788056648780": {
+    "carousel": "1",
+    "public": "1",
+    "title": "S láskou z Paríža",
+    "author": "Jules Wake",
+    "cover3d": "books/s_laskou_z_pariza/3d.jpg",
+    "cover": "books/s_laskou_z_pariza/cover.jpg",
+    "chapter": "books/s_laskou_z_pariza/chapter.html",
+    "buy": "https://www.albatrosmedia.sk/tituly/26746011/s-laskou-z-pariza/",
+    "description": "Tým najlepším vianočným darčekom… si ty"
+},
+  "9788056649824": {
+    "carousel": "1",
+    "public": "1",
+    "title": "Toskánske tajomstvo",
+    "author": "Daniela Sacerdoti",
+    "cover3d": "books/toskanske_tajomstvo/3d.jpg",
+    "cover": "books/toskanske_tajomstvo/cover.jpg",
+    "chapter": "books/toskanske_tajomstvo/chapter.html",
+    "buy": "https://www.albatrosmedia.sk/tituly/26579790/toskanske-tajomstvo/",
+    "description": "Ako dlho sa dá odolávať zakázanej láske?"
   }
 }

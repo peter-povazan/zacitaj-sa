@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Začítaj sa</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/home.css">
+</head>
+
+<body>
+
+<!-- Logo hore -->
+<div class="text-center mt-4 mb-4">
+  <img src="images/albatrosmedia_logo.svg" class="book-img" alt="Albatros logo">
+</div>
+
+<div class="container">
+
+  <!-- SWIPER -->
+  <div class="swiper mySwiper">
+
+    <div class="swiper-wrapper" id="booksWrapper">
+      <!-- Doplní JS -->
+    </div>
+
+    <!-- šípky -->
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+
+    <!-- pagination -->
+    <div class="swiper-pagination"></div>
+  </div>
+
+  <!-- CTA -->
+  <div class="text-center mt-4">
+    <a id="ctaBtn" class="cta-btn">Začítaj sa!</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="sticky-footer">
+  2026 © Albatros Media Slovakia s.r.o.
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<script>
+let carouselList = [];
+
+// LOAD BOOKS
+async function loadBooks() {
+  const resp = await fetch("books.json");
+  const data = await resp.json();
+  const wrapper = document.getElementById("booksWrapper");
+
+  Object.entries(data).forEach(([isbn, book]) => {
+    if (book.carousel === "1" && book.public === "1") {
+
+      // uložíme knihu
+      carouselList.push({ isbn, ...book });
+
+      // index knihy = jej pozícia v poli
+      const index = carouselList.length - 1;
+
+      wrapper.innerHTML += `
+        <div class="swiper-slide" data-index="${index}">
+          <div class="book-card text-center">
+            <img src="${book.cover}" class="cover-img" data-isbn="${isbn}" alt="${book.title}">
+            <h4 class="mt-3">${book.title}</h4>
+            <p class="author">${book.author}</p>
+          </div>
+        </div>`;
+    }
+  });
+}
+
+loadBooks().then(initSwiper);
+
+// INIT SWIPER
+function initSwiper() {
+  const swiper = new Swiper(".mySwiper", {
+    slidesPerView: 1.1,
+    centeredSlides: true,
+    spaceBetween: 25,
+    loop: true,
+
+    pagination: {
+      el: ".swiper-pagination",
+      clickable: true
+    },
+
+    navigation: {
+      nextEl: ".swiper-button-next",
+      prevEl: ".swiper-button-prev"
+    },
+
+    keyboard: {
+      enabled: true,
+      onlyInViewport: true,
+    },
+
+    breakpoints: {
+      768: { slidesPerView: 3, spaceBetween: 40 },
+      1200: { slidesPerView: 4, spaceBetween: 50 }
+    }
+  });
+
+  const cta = document.getElementById("ctaBtn");
+
+  // nastav CTA pri zmene slidu
+  swiper.on("slideChange", () => {
+    const idx = swiper.realIndex;
+    const book = carouselList[idx];
+    if (book) {
+      cta.href = `book.html?id=${book.isbn}`;
+    }
+  });
+
+  // CTA pre prvý slide
+  if (carouselList.length > 0) {
+    cta.href = `book.html?id=${carouselList[0].isbn}`;
+  }
+
+  // CLICK NA OBÁLKU = správna kniha
+  document.addEventListener("click", (e) => {
+    const img = e.target.closest(".cover-img");
+    if (!img) return;
+
+    const slideEl = img.closest(".swiper-slide");
+    if (!slideEl) return;
+
+    const index = parseInt(slideEl.dataset.index);
+    if (isNaN(index)) return;
+
+    const book = carouselList[index];
+    if (!book) return;
+
+    window.location.href = `book.html?id=${book.isbn}`;
+  });
+}
+</script>
+
+</body>
+</html>

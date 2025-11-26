@@ -6,9 +6,17 @@ body {
   font-family: "Georgia", "Times New Roman", serif;
 }
 
+#content.chapter-content img {
+  display: block;
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  margin: 0 auto;
+}
+
 h2 {
   text-align: center;
-  margin: 3rem;
+  margin: 2rem;
 }
 
 .book-img {
