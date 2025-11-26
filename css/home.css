@@ -1,5 +1,18 @@
 /* ZÁKLAD -------------------------------------------------- */
 
+/* Dynamické farebné pozadie */
+#dynamicBg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background: #f5f5f5;
+  transition: background 0.8s ease;
+  filter: blur(60px);
+}
+
 body {
   background: #fafafa;
   margin: 0;
@@ -64,6 +77,7 @@ h1 {
 
 .book-card {
   max-width: 220px;
+  transition: transform 0.25s ease;
 }
 
 
@@ -73,7 +87,7 @@ h1 {
   width: 100%;
   border-radius: 12px;
   box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-  transition: transform 0.25s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
   cursor: pointer;
 }
 
@@ -98,33 +112,49 @@ h1 {
   margin-top: 14px;
   font-size: 18px;
   font-weight: 600;
+  transition: transform 0.25s ease, opacity 0.25s ease;
 }
 
 .author {
   color: #777;
   margin-top: -2px;
   font-size: 14px;
+  transition: transform 0.25s ease, opacity 0.25s ease;
 }
 
 
-/* CTA BUTTON --------------------------------------------- */
+/* CTA BUTTON — FLAT WARM GREY (CLEAN PREMIUM) ------------------------------- */
 
 .cta-btn {
-  background: #1AAE2D;
-  border: none;
-  padding: 13px 32px;
-  border-radius: 12px;
-  color: white;
-  font-size: 18px;
+  background: linear-gradient(180deg, #CFCAC3 0%, #BCB7B0 100%);
+  padding: 14px 36px;
+  border-radius: 14px;
+
+  color: #222;
+  font-size: 19px;
   cursor: pointer;
-  font-weight: 600;
-  font-family: "Open Sans Condensed", sans-serif;
+  font-weight: 700;
   text-decoration: none;
   display: inline-block;
+  font-family: "Open Sans Condensed", sans-serif;
+
+  /* veľmi jemný tieň – flat look */
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.10);
+
+  transition: all 0.18s ease;
 }
 
 .cta-btn:hover {
-  background: #138222;
+  transform: translateY(-1px);
+  box-shadow:
+    0 3px 8px rgba(0, 0, 0, 0.12);
+}
+
+.cta-btn:active {
+  transform: translateY(0px) scale(0.98);
+  box-shadow:
+    0 1px 4px rgba(0, 0, 0, 0.08);
 }
 
 
@@ -173,4 +203,20 @@ h1 {
   color: #666;
   border-top: 1px solid #ddd;
   z-index: 999;
+}
+
+
+/* ---------------------------------------------------------------- */
+/* ⭐ APPLE BOOKS HOVER EFEKT – PRÉMIOVÝ LIFT                       */
+/* ---------------------------------------------------------------- */
+
+.book-card:hover .cover-img {
+  transform: translateY(-1px) rotate3d(1, 1, 0, 0.4deg) scale(1.015);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.14);
+}
+
+.book-card:hover h4,
+.book-card:hover .author {
+  transform: translateY(1px);
+  opacity: 1;
 }

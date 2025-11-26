@@ -12,6 +12,8 @@
 
 <body>
 
+<!-- Dynamické rozmazané pozadie -->
+<div id="dynamicBg"></div>
 
 <!-- Logo hore -->
 <div class="text-center mt-4 mb-4 logo">
@@ -37,7 +39,7 @@
 
   <!-- CTA -->
   <div class="text-center mt-4">
-    <a id="ctaBtn" class="cta-btn">Začítaj sa!</a>
+    <a id="ctaBtn" class="cta-btn">Otvoriť knihu</a>
   </div>
 </div>
 
@@ -51,7 +53,46 @@
 <script>
 let carouselList = [];
 
-// LOAD BOOKS
+/* ------------------------------------------------------------------------------------
+   EXTRAKCIA DOMINANTNEJ FARBY OBÁLKY
+------------------------------------------------------------------------------------- */
+function getDominantColor(imageUrl, callback) {
+  const img = new Image();
+  img.crossOrigin = "Anonymous";
+  img.src = imageUrl;
+
+  img.onload = () => {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = img.width;
+    canvas.height = img.height;
+    ctx.drawImage(img, 0, 0);
+
+    const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+
+    let r = 0, g = 0, b = 0, count = 0;
+
+    // vzorka pixelov pre výkon
+    for (let i = 0; i < data.length; i += 80) {
+      r += data[i];
+      g += data[i + 1];
+      b += data[i + 2];
+      count++;
+    }
+
+    r = Math.round(r / count);
+    g = Math.round(g / count);
+    b = Math.round(b / count);
+
+    callback(`rgb(${r}, ${g}, ${b})`);
+  };
+}
+
+
+/* ------------------------------------------------------------------------------------
+   LOAD BOOKS
+------------------------------------------------------------------------------------- */
 async function loadBooks() {
   const resp = await fetch("books.json");
   const data = await resp.json();
@@ -60,10 +101,7 @@ async function loadBooks() {
   Object.entries(data).forEach(([isbn, book]) => {
     if (book.carousel === "1" && book.public === "1") {
 
-      // uložíme knihu
       carouselList.push({ isbn, ...book });
-
-      // index knihy = jej pozícia v poli
       const index = carouselList.length - 1;
 
       wrapper.innerHTML += `
@@ -80,7 +118,10 @@ async function loadBooks() {
 
 loadBooks().then(initSwiper);
 
-// INIT SWIPER
+
+/* ------------------------------------------------------------------------------------
+   INIT SWIPER
+------------------------------------------------------------------------------------- */
 function initSwiper() {
   const swiper = new Swiper(".mySwiper", {
     slidesPerView: 1.1,
@@ -110,22 +151,42 @@ function initSwiper() {
   });
 
   const cta = document.getElementById("ctaBtn");
+  const bg = document.getElementById("dynamicBg");
 
-  // nastav CTA pri zmene slidu
+
+  /* --------------------------------------------------------------------------
+     Pozadie pri slideChange
+  --------------------------------------------------------------------------- */
   swiper.on("slideChange", () => {
     const idx = swiper.realIndex;
     const book = carouselList[idx];
-    if (book) {
-      cta.href = `book.html?id=${book.isbn}`;
-    }
+    if (!book) return;
+
+    getDominantColor(book.cover, (color) => {
+      const rgba = color.replace("rgb(", "").replace(")", "");
+      bg.style.background = `radial-gradient(circle at center, rgba(${rgba}, 0.30), #fafafa)`;
+    });
+
+    cta.href = `book.html?id=${book.isbn}`;
   });
 
-  // CTA pre prvý slide
+
+  /* --------------------------------------------------------------------------
+     Pozadie pre prvý slide po načítaní
+  --------------------------------------------------------------------------- */
   if (carouselList.length > 0) {
-    cta.href = `book.html?id=${carouselList[0].isbn}`;
+    const first = carouselList[0];
+    getDominantColor(first.cover, (color) => {
+      bg.style.background = `radial-gradient(circle at center, ${color}, #fafafa)`;
+    });
+
+    cta.href = `book.html?id=${first.isbn}`;
   }
 
-  // CLICK NA OBÁLKU = správna kniha
+
+  /* --------------------------------------------------------------------------
+     CLICK NA OBÁLKU = otvor knihu
+  --------------------------------------------------------------------------- */
   document.addEventListener("click", (e) => {
     const img = e.target.closest(".cover-img");
     if (!img) return;
