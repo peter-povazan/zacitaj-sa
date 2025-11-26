@@ -6,6 +6,10 @@ body {
   font-family: "Georgia", "Times New Roman", serif;
 }
 
+.logo {
+  margin-top: 0 !important;
+}
+
 #content.chapter-content img {
   display: block;
   max-width: 100%;

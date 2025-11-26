@@ -16,7 +16,10 @@
 
 <div class="container py-5">
 
-  <div class="text-center mb-4"><img src="images/albatrosmedia_logo.svg" class="book-img" alt="Book 4"></div>
+<!-- Logo hore -->
+<div class="text-center mt-4 mb-4 logo">
+  <img src="images/albatrosmedia_logo.svg" class="book-img" alt="Albatros logo">
+</div>
 
   <!-- Book header -->
   <div class="text-center mb-4">
@@ -230,6 +233,10 @@ window.addEventListener("scroll", () => {
     btnFullBuy.style.display = "none";
   }
 });
+
+ document.getElementById("homeBtn").addEventListener("click", () => {
+    window.location.href = "index.html";
+  });
 
 </script>
 
