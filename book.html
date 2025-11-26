@@ -12,6 +12,10 @@
 
 </head>
 <body>
+<div id="paperGrain"></div>
+<!-- Dynamické farebné pozadie -->
+<div id="dynamicBg"></div>
+
 <div id="reading-progress"></div>
 
 <div class="container py-5">
@@ -61,6 +65,41 @@
 
 
 <script>
+// 🌈 Dynamic background extractor
+async function applyDynamicBackground(src) {
+  const img = new Image();
+  img.crossOrigin = "Anonymous";
+  img.src = src;
+
+  img.onload = () => {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = img.width;
+    canvas.height = img.height;
+    ctx.drawImage(img, 0, 0);
+
+    const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+
+    let r = 0, g = 0, b = 0, count = 0;
+    for (let i = 0; i < data.length; i += 40) {
+      r += data[i];
+      g += data[i + 1];
+      b += data[i + 2];
+      count++;
+    }
+
+    r = Math.floor(r / count);
+    g = Math.floor(g / count);
+    b = Math.floor(b / count);
+
+    document.getElementById("dynamicBg").style.background =
+      `radial-gradient(circle at 30% 30%, rgba(${r},${g},${b},0.4), #fafafa 60%)`;
+  };
+}
+
+
+// LOAD BOOK
 async function loadBook() {
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id");
@@ -102,14 +141,17 @@ async function loadBook() {
   // Titulky
   document.querySelector("h1").textContent = book.title;
   document.querySelector(".text-muted").textContent = book.author;
-
   document.title = book.title;
 
-  // Cover or placeholder
+  // Obálka
   if (book.cover && book.cover.trim() !== "") {
     coverImg.src = book.cover;
     coverImg.style.display = "block";
     coverPlaceholder.style.display = "none";
+
+    // 🌈 Apply background
+    applyDynamicBackground(book.cover);
+
   } else {
     coverImg.style.display = "none";
     coverPlaceholder.style.display = "flex";
@@ -119,87 +161,47 @@ async function loadBook() {
   const chapterHTML = await fetch(book.chapter).then(r => r.text());
   content.innerHTML = chapterHTML;
 
-  // Toolbar buy
-  const buyToolbarBtn = document.getElementById("buyBtn");
-  if (buyToolbarBtn) {
-    buyToolbarBtn.onclick = () => window.open(book.buy, "_blank");
-  }
-
-  // CTA buy
-  const buyFullBtn = document.getElementById("buyFullBtn");
-  if (buyFullBtn) {
-    buyFullBtn.onclick = () => window.open(book.buy, "_blank");
-  }
+  // Buy buttons
+  document.getElementById("buyBtn").onclick = () => window.open(book.buy, "_blank");
+  document.getElementById("buyFullBtn").onclick = () => window.open(book.buy, "_blank");
 }
 
 loadBook();
 
+// AUTO-HIDE TOOLBAR --------------------------------------
 
-// Scroll logika – prepínanie CTA a ikon
+let lastScrollTop = 0;
+let toolbar = document.getElementById("bottom-toolbar");
+let autoHideDisabled = false;
+
 window.addEventListener("scroll", () => {
-  const btnZoomOut = document.getElementById("zoomOutBtn");
-  const btnZoomIn = document.getElementById("zoomInBtn");
-  const btnTheme = document.getElementById("themeBtn");
-  const btnBuy = document.getElementById("buyBtn");
-  const btnFullBuy = document.getElementById("buyFullBtn");
 
-  const scrollPos = window.scrollY + window.innerHeight;
-  const bottom = document.body.offsetHeight;
-
-  if (scrollPos >= bottom - window.innerHeight * 0.15) {
-
-    btnZoomOut.style.display = "none";
-    btnZoomIn.style.display = "none";
-    btnTheme.style.display = "none";
-    btnBuy.style.display = "none";
-
-    btnFullBuy.style.display = "flex";
-
-  } else {
-
-    btnZoomOut.style.display = "flex";
-    btnZoomIn.style.display = "flex";
-    btnTheme.style.display = "flex";
-    btnBuy.style.display = "flex";
-
-    btnFullBuy.style.display = "none";
+  // ak je na spodku → auto-hide vypnutý
+  if (autoHideDisabled) {
+    toolbar.classList.add("show");
+    toolbar.classList.remove("hide");
+    return;
   }
+
+  let st = window.pageYOffset || document.documentElement.scrollTop;
+
+  if (st > lastScrollTop + 5) {
+    // scroll DOWN
+    toolbar.classList.add("hide");
+    toolbar.classList.remove("show");
+  } 
+  else if (st < lastScrollTop - 5) {
+    // scroll UP
+    toolbar.classList.remove("hide");
+    toolbar.classList.add("show");
+  }
+
+  lastScrollTop = st <= 0 ? 0 : st;
 });
 
-
-// Zoom plus/mínus
-document.getElementById("zoomInBtn").onclick = () => {
-  const content = document.getElementById("content");
-  const style = window.getComputedStyle(content).fontSize;
-  const currentSize = parseFloat(style);
-  content.style.fontSize = (currentSize + 2) + 'px';
-};
-
-document.getElementById("zoomOutBtn").onclick = () => {
-  const content = document.getElementById("content");
-  const style = window.getComputedStyle(content).fontSize;
-  const currentSize = parseFloat(style);
-  content.style.fontSize = (currentSize - 2) + 'px';
-};
-
-
-// DARK / LIGHT MODE PREPINAC
-document.getElementById("themeBtn").onclick = () => {
-  document.body.classList.toggle("dark-mode");
-
-  const icon = document.querySelector("#themeBtn i");
-  if (document.body.classList.contains("dark-mode")) {
-    icon.classList.remove("bi-moon");
-    icon.classList.add("bi-brightness-high");
-  } else {
-    icon.classList.remove("bi-brightness-high");
-    icon.classList.add("bi-moon");
-  }
-};
-
+// Scroll logika – CTA prepínanie + progress bar
 window.addEventListener("scroll", () => {
 
-  // Progress bar
   const scrollTop = window.scrollY;
   const docHeight = document.documentElement.scrollHeight - window.innerHeight;
   const progress = (scrollTop / docHeight) * 100;
@@ -214,30 +216,70 @@ window.addEventListener("scroll", () => {
   const scrollPos = window.scrollY + window.innerHeight;
   const bottom = document.body.offsetHeight;
 
-  if (scrollPos >= bottom - window.innerHeight * 0.15) {
+if (scrollPos >= bottom - window.innerHeight * 0.15) {
 
-    btnZoomOut.style.display = "none";
-    btnZoomIn.style.display = "none";
-    btnTheme.style.display = "none";
-    btnBuy.style.display = "none";
+  btnZoomOut.style.display = "none";
+  btnZoomIn.style.display = "none";
+  btnTheme.style.display = "none";
+  btnBuy.style.display = "none";
 
-    btnFullBuy.style.display = "flex";
+  btnFullBuy.style.display = "flex";
 
-  } else {
+  // 🔥 STOP AUTO-HIDE
+  autoHideDisabled = true;
 
-    btnZoomOut.style.display = "flex";
-    btnZoomIn.style.display = "flex";
-    btnTheme.style.display = "flex";
-    btnBuy.style.display = "flex";
+  // 🔥 Toolbar musí byť VIDITEĽNÝ (aj pri scrolle dole)
+  toolbar.classList.add("show");
+  toolbar.classList.remove("hide");
 
-    btnFullBuy.style.display = "none";
-  }
+} else {
+
+  btnZoomOut.style.display = "flex";
+  btnZoomIn.style.display = "flex";
+  btnTheme.style.display = "flex";
+  btnBuy.style.display = "flex";
+
+  btnFullBuy.style.display = "none";
+
+  // 🔥 AUTO-HIDE ZASE POVOLENÝ (iba mimo spodku)
+  autoHideDisabled = false;
+}
 });
 
- document.getElementById("homeBtn").addEventListener("click", () => {
-    window.location.href = "index.html";
-  });
 
+// Zoom plus/mínus
+document.getElementById("zoomInBtn").onclick = () => {
+  const content = document.getElementById("content");
+  const style = window.getComputedStyle(content).fontSize;
+  content.style.fontSize = (parseFloat(style) + 2) + 'px';
+};
+
+document.getElementById("zoomOutBtn").onclick = () => {
+  const content = document.getElementById("content");
+  const style = window.getComputedStyle(content).fontSize;
+  content.style.fontSize = (parseFloat(style) - 2) + 'px';
+};
+
+
+// DARK / LIGHT MODE
+document.getElementById("themeBtn").onclick = () => {
+  document.body.classList.toggle("dark-mode");
+
+  const icon = document.querySelector("#themeBtn i");
+  if (document.body.classList.contains("dark-mode")) {
+    icon.classList.remove("bi-moon");
+    icon.classList.add("bi-brightness-high");
+  } else {
+    icon.classList.remove("bi-brightness-high");
+    icon.classList.add("bi-moon");
+  }
+};
+
+
+// Home
+document.getElementById("homeBtn").addEventListener("click", () => {
+  window.location.href = "index.html";
+});
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
