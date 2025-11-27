@@ -9,26 +9,24 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
   <link href="css/stylesheet.css" rel="stylesheet">
-
 </head>
-<body>
-<div id="paperGrain"></div>
-<!-- Dynamické farebné pozadie -->
-<div id="dynamicBg"></div>
 
+<body>
+
+<div id="paperGrain"></div>
+<div id="dynamicBg"></div>
 <div id="reading-progress"></div>
 
 <div class="container py-5">
 
-<!-- Logo hore -->
-<div class="text-center mt-4 mb-4 logo">
-  <img src="images/albatrosmedia_logo.svg" class="book-img" alt="Albatros logo">
-</div>
+  <!-- Logo -->
+  <div class="text-center mt-4 mb-4 logo" style="cursor:pointer;">
+    <img id="logoClick" src="images/albatrosmedia_logo.svg" class="book-img" alt="Albatros logo">
+  </div>
 
   <!-- Book header -->
   <div class="text-center mb-4">
 
-    <!-- Book Cover or Placeholder -->
     <img src="" id="bookCover" class="book-cover mb-3" alt="Book Cover">
 
     <div id="coverPlaceholder" class="cover-placeholder">
@@ -44,28 +42,26 @@
 
 </div>
 
-<!-- Bottom toolbar -->
-<div id="bottom-toolbar">
+<!-- Bottom Toolbar – always visible -->
+<div id="bottom-toolbar" class="toolbar-fixed">
   <button id="homeBtn" class="icon-btn"><i class="bi bi-house"></i></button>
   <button id="zoomOutBtn" class="icon-btn"><i class="bi bi-dash-circle"></i></button>
   <button id="zoomInBtn" class="icon-btn"><i class="bi bi-plus-circle"></i></button>
   <button id="themeBtn" class="icon-btn"><i class="bi bi-moon"></i></button>
   <button id="buyBtn" class="icon-btn"><i class="bi bi-cart2"></i></button>
 
-  <!-- CTA tlačidlo pri dočítaní -->
   <a id="buyFullBtn" class="btn btn-primary" target="_blank">
     Kúpiť knihu
   </a>
 </div>
 
-<!-- Footer -->
 <footer class="sticky-footer">
   2026 © Albatros Media Slovakia s.r.o.
 </footer>
 
 
 <script>
-// 🌈 Dynamic background extractor
+//Dynamic background extractor
 async function applyDynamicBackground(src) {
   const img = new Image();
   img.crossOrigin = "Anonymous";
@@ -96,6 +92,21 @@ async function applyDynamicBackground(src) {
     document.getElementById("dynamicBg").style.background =
       `radial-gradient(circle at 30% 30%, rgba(${r},${g},${b},0.4), #fafafa 60%)`;
   };
+}
+
+
+//🔥 SCROLL STORAGE
+function saveScrollPosition(bookId) {
+  localStorage.setItem("scrollPos_" + bookId, window.scrollY);
+}
+
+function loadScrollPosition(bookId) {
+  const pos = localStorage.getItem("scrollPos_" + bookId);
+  if (pos) {
+    setTimeout(() => {
+      window.scrollTo({ top: parseFloat(pos), behavior: "smooth" });
+    }, 150);
+  }
 }
 
 
@@ -138,70 +149,42 @@ async function loadBook() {
     return;
   }
 
-  // Titulky
   document.querySelector("h1").textContent = book.title;
   document.querySelector(".text-muted").textContent = book.author;
   document.title = book.title;
 
-  // Obálka
   if (book.cover && book.cover.trim() !== "") {
     coverImg.src = book.cover;
     coverImg.style.display = "block";
     coverPlaceholder.style.display = "none";
-
-    // 🌈 Apply background
     applyDynamicBackground(book.cover);
-
   } else {
     coverImg.style.display = "none";
     coverPlaceholder.style.display = "flex";
   }
 
-  // Kapitola
   const chapterHTML = await fetch(book.chapter).then(r => r.text());
   content.innerHTML = chapterHTML;
 
-  // Buy buttons
   document.getElementById("buyBtn").onclick = () => window.open(book.buy, "_blank");
   document.getElementById("buyFullBtn").onclick = () => window.open(book.buy, "_blank");
+
+  //Apply saved font size
+  const savedFont = localStorage.getItem("readerFontSize");
+  if (savedFont) content.style.fontSize = savedFont + "px";
+
+  //Restore scroll
+  loadScrollPosition(id);
+
+  //Save scroll on every scroll
+  window.addEventListener("scroll", () => saveScrollPosition(id));
 }
 
 loadBook();
 
-// AUTO-HIDE TOOLBAR --------------------------------------
 
-let lastScrollTop = 0;
-let toolbar = document.getElementById("bottom-toolbar");
-let autoHideDisabled = false;
-
+// Scroll logic – ONLY CTA switching, toolbar stays visible
 window.addEventListener("scroll", () => {
-
-  // ak je na spodku → auto-hide vypnutý
-  if (autoHideDisabled) {
-    toolbar.classList.add("show");
-    toolbar.classList.remove("hide");
-    return;
-  }
-
-  let st = window.pageYOffset || document.documentElement.scrollTop;
-
-  if (st > lastScrollTop + 5) {
-    // scroll DOWN
-    toolbar.classList.add("hide");
-    toolbar.classList.remove("show");
-  } 
-  else if (st < lastScrollTop - 5) {
-    // scroll UP
-    toolbar.classList.remove("hide");
-    toolbar.classList.add("show");
-  }
-
-  lastScrollTop = st <= 0 ? 0 : st;
-});
-
-// Scroll logika – CTA prepínanie + progress bar
-window.addEventListener("scroll", () => {
-
   const scrollTop = window.scrollY;
   const docHeight = document.documentElement.scrollHeight - window.innerHeight;
   const progress = (scrollTop / docHeight) * 100;
@@ -216,73 +199,93 @@ window.addEventListener("scroll", () => {
   const scrollPos = window.scrollY + window.innerHeight;
   const bottom = document.body.offsetHeight;
 
-if (scrollPos >= bottom - window.innerHeight * 0.15) {
-
-  btnZoomOut.style.display = "none";
-  btnZoomIn.style.display = "none";
-  btnTheme.style.display = "none";
-  btnBuy.style.display = "none";
-
-  btnFullBuy.style.display = "flex";
-
-  // 🔥 STOP AUTO-HIDE
-  autoHideDisabled = true;
-
-  // 🔥 Toolbar musí byť VIDITEĽNÝ (aj pri scrolle dole)
-  toolbar.classList.add("show");
-  toolbar.classList.remove("hide");
-
-} else {
-
-  btnZoomOut.style.display = "flex";
-  btnZoomIn.style.display = "flex";
-  btnTheme.style.display = "flex";
-  btnBuy.style.display = "flex";
-
-  btnFullBuy.style.display = "none";
-
-  // 🔥 AUTO-HIDE ZASE POVOLENÝ (iba mimo spodku)
-  autoHideDisabled = false;
-}
+  if (scrollPos >= bottom - window.innerHeight * 0.15) {
+    btnZoomOut.style.display = "none";
+    btnZoomIn.style.display = "none";
+    btnTheme.style.display = "none";
+    btnBuy.style.display = "none";
+    btnFullBuy.style.display = "flex";
+  } else {
+    btnZoomOut.style.display = "flex";
+    btnZoomIn.style.display = "flex";
+    btnTheme.style.display = "flex";
+    btnBuy.style.display = "flex";
+    btnFullBuy.style.display = "none";
+  }
 });
 
 
-// Zoom plus/mínus
-document.getElementById("zoomInBtn").onclick = () => {
+// Zoom
+function adjustZoom(change) {
   const content = document.getElementById("content");
-  const style = window.getComputedStyle(content).fontSize;
-  content.style.fontSize = (parseFloat(style) + 2) + 'px';
-};
 
-document.getElementById("zoomOutBtn").onclick = () => {
-  const content = document.getElementById("content");
-  const style = window.getComputedStyle(content).fontSize;
-  content.style.fontSize = (parseFloat(style) - 2) + 'px';
-};
+  const docHeightBefore = document.documentElement.scrollHeight - window.innerHeight;
+  const ratio = docHeightBefore > 0 ? window.scrollY / docHeightBefore : 0;
+
+  const currentSize = parseFloat(getComputedStyle(content).fontSize);
+  const newSize = currentSize + change;
+
+  //Save zoom
+  localStorage.setItem("readerFontSize", newSize);
+
+  content.style.fontSize = newSize + "px";
+
+  setTimeout(() => {
+    const docHeightAfter = document.documentElement.scrollHeight - window.innerHeight;
+    const newScroll = ratio * docHeightAfter;
+
+    window.scrollTo({
+      top: newScroll,
+      behavior: "smooth"
+    });
+  }, 20);
+}
+
+document.getElementById("zoomInBtn").onclick = () => adjustZoom(+2);
+document.getElementById("zoomOutBtn").onclick = () => adjustZoom(-2);
 
 
-// DARK / LIGHT MODE
+// Theme
+function applySavedTheme() {
+  const saved = localStorage.getItem("readerTheme");
+
+  if (saved === "dark") {
+    document.body.classList.add("dark-mode");
+    document.querySelector("#themeBtn i")
+      .classList.replace("bi-moon", "bi-brightness-high");
+  }
+}
+applySavedTheme();
+
 document.getElementById("themeBtn").onclick = () => {
   document.body.classList.toggle("dark-mode");
 
   const icon = document.querySelector("#themeBtn i");
-  if (document.body.classList.contains("dark-mode")) {
-    icon.classList.remove("bi-moon");
-    icon.classList.add("bi-brightness-high");
+  const isDark = document.body.classList.contains("dark-mode");
+
+  if (isDark) {
+    icon.classList.replace("bi-moon", "bi-brightness-high");
+    localStorage.setItem("readerTheme", "dark");
   } else {
-    icon.classList.remove("bi-brightness-high");
-    icon.classList.add("bi-moon");
+    icon.classList.replace("bi-brightness-high", "bi-moon");
+    localStorage.setItem("readerTheme", "light");
   }
 };
 
 
-// Home
-document.getElementById("homeBtn").addEventListener("click", () => {
+// Home button
+document.getElementById("homeBtn").onclick = () => {
   window.location.href = "index.html";
-});
+};
 
+// Logo click
+document.querySelector(".logo").onclick = () => {
+  window.location.href = "index.html";
+};
 </script>
 
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
