@@ -54,9 +54,7 @@
 let carouselList = [];
 let swiper = null;
 
-/* ----------------------------------------------------------------
-   Dominantná farba
----------------------------------------------------------------- */
+
 function getDominantColor(imageUrl, callback) {
   const img = new Image();
   img.crossOrigin = "Anonymous";
@@ -84,9 +82,7 @@ function getDominantColor(imageUrl, callback) {
   };
 }
 
-/* ----------------------------------------------------------------
-   Načítanie kníh
----------------------------------------------------------------- */
+
 async function loadBooks() {
   const resp = await fetch("books.json");
   const data = await resp.json();
@@ -115,9 +111,7 @@ async function loadBooks() {
   initAfterImagesLoad();
 }
 
-/* ----------------------------------------------------------------
-   Počkáme, kým sa načítajú obrázky → fix všetkých bugov Swipera
----------------------------------------------------------------- */
+
 function initAfterImagesLoad() {
   const imgs = document.querySelectorAll(".cover-img");
   let loaded = 0;
@@ -140,9 +134,7 @@ function initAfterImagesLoad() {
   });
 }
 
-/* ----------------------------------------------------------------
-   INIT – pôvodná konfigurácia, ale kompletne opravená
----------------------------------------------------------------- */
+
 function initSwiper() {
 
   if (swiper) swiper.destroy(true, true);
@@ -180,9 +172,7 @@ function initSwiper() {
     }
   });
 
-  /* ----------------------------------------------------------------
-     💛 VEĽKÝ FIX — opraví preskakovanie, rozhodenie, posuny, šípky
-  ---------------------------------------------------------------- */
+
   setTimeout(() => {
     swiper.updateSlides();
     swiper.updateSize();
@@ -199,9 +189,7 @@ function initSwiper() {
   updateUI(0);
 }
 
-/* ----------------------------------------------------------------
-   Update CTA + pozadia
----------------------------------------------------------------- */
+
 function updateUI(idx) {
   const book = carouselList[idx];
   if (!book) return;
@@ -215,9 +203,7 @@ function updateUI(idx) {
   });
 }
 
-/* ----------------------------------------------------------------
-   Kliknutie na obálku
----------------------------------------------------------------- */
+
 document.addEventListener("click", (e) => {
   const img = e.target.closest(".cover-img");
   if (!img) return;

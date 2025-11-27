@@ -95,7 +95,7 @@ async function applyDynamicBackground(src) {
 }
 
 
-//🔥 SCROLL STORAGE
+//SCROLL STORAGE
 function saveScrollPosition(bookId) {
   localStorage.setItem("scrollPos_" + bookId, window.scrollY);
 }
@@ -183,7 +183,7 @@ async function loadBook() {
 loadBook();
 
 
-// Scroll logic – ONLY CTA switching, toolbar stays visible
+// Scroll logic
 window.addEventListener("scroll", () => {
   const scrollTop = window.scrollY;
   const docHeight = document.documentElement.scrollHeight - window.innerHeight;
