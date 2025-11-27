@@ -40,7 +40,7 @@
     "description": "Hlboký príbeh o strate, vzťahoch a láske"
 },
   "9788056648803": {
-    "carousel": "1",
+    "carousel": "0",
     "public": "1",
     "title": "Katabasis",
     "author": "R.F. Kuang",
@@ -51,7 +51,7 @@
 },
   "9788056648797": {
     "carousel": "1",
-    "public": "1",
+    "public": "0",
     "title": "Rozprávačka z Auschwitzu",
     "author": "Siobhan Curham",
     "cover": "books/rozpravacka_z_auschwitzu/cover.jpg",
@@ -60,7 +60,7 @@
     "description": "Brutálnemu útlaku čelila svojimi príbehmi"
 },
   "9788056648780": {
-    "carousel": "1",
+    "carousel": "0",
     "public": "1",
     "title": "S láskou z Paríža",
     "author": "Jules Wake",
@@ -71,7 +71,7 @@
 },
   "9788056649824": {
     "carousel": "1",
-    "public": "1",
+    "public": "0",
     "title": "Toskánske tajomstvo",
     "author": "Daniela Sacerdoti",
     "cover": "books/toskanske_tajomstvo/cover.jpg",
